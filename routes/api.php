@@ -14,8 +14,8 @@ use App\Http\Controllers\AuthController;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+Route::post('/register', [AuthController::class, 'register']);
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
-    Route::post('/register', [AuthController::class, 'register']);
     return $request->user();
 });
