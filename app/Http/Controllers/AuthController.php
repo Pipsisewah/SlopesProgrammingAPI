@@ -6,10 +6,12 @@ use App\Http\Requests\AuthRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 
 class AuthController extends Controller
 {
     public function register(AuthRequest $request){
+        Log::notice("Received request to create user, " , ['info' => $request->toArray()]);
         $user = User::create([
            'name' => $request->name,
            'email' => $request->email,
