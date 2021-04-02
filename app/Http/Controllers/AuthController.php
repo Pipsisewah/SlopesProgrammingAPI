@@ -21,4 +21,8 @@ class AuthController extends Controller
             'token_type' => 'Bearer',
         ]);
     }
+
+    public function test(Request $request){
+        return response()->json(['data' => 'works'], 200);
+    }
 }
