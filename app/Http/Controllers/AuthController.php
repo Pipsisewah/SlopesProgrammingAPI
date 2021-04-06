@@ -36,7 +36,11 @@ class AuthController extends Controller
             ]);
         }
 
-        return $user->createToken($request->device_name)->plainTextToken;
+        $user->tokens()->delete();
+        return response()->json([
+            'access_token' => $user->createToken($request->email)->plainTextToken,
+            'token_type' => 'Bearer',
+        ]);
     }
 
     public function test(Request $request){
