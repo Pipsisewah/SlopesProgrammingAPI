@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use \App\Http\Controllers\AuthController;
 use \App\Http\Controllers\CompaniesController;
 use \App\Http\Controllers\IndustryController;
+use \App\Http\Controllers\ProjectController;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,4 +30,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 });
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::resource("/industry", IndustryController::class);
+});
+Route::middleware(['auth:sanctum'])->group(function () {
+    Route::resource("/project", ProjectController::class);
 });
