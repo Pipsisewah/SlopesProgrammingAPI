@@ -17,11 +17,18 @@ class Company extends Model
      */
     protected $fillable = [
         'name',
+        'description',
+        'city',
+        'state',
     ];
 
     public $timestamps = true;
 
     public function createdBy():BelongsTo{
         return $this->belongsTo(User::class, "created_by", "id");
+    }
+
+    public function industry():BelongsTo{
+        return $this->belongsTo(Industry::class, "industry_id", "id");
     }
 }

@@ -23,8 +23,18 @@ class CompanyPolicy
 
     public function view(User $user, Company $company): bool
     {
-        Log::notice("Checking policy for user: " . $user);
-        Log::notice("Checking policy for company: " . $company);
+        return $this->isUserCreatorOfCompany($user, $company);
+    }
+
+    public function update(User $user, Company $company): bool{
+        return $this->isUserCreatorOfCompany($user, $company);
+    }
+
+    public function delete(User $user, Company $company): bool{
+        return $this->isUserCreatorOfCompany($user, $company);
+    }
+
+    private function isUserCreatorOfCompany(User $user, Company $company): bool{
         return $company->createdBy()->get()->first()->id === $user->id;
     }
 }
