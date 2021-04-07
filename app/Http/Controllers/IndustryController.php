@@ -4,8 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\UpdateIndustryRequest;
 use App\Http\Responses\StandardResponse;
+use App\Models\Company;
 use App\Models\Industry;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 class IndustryController extends Controller
@@ -13,7 +17,7 @@ class IndustryController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function index()
     {
@@ -27,19 +31,22 @@ class IndustryController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return JsonResponse
      */
     public function create()
     {
-        //
+        return StandardResponse::getStandardResponse(
+            404,
+            "Route Not Available"
+        );
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param Request $request
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function store(Request $request)
     {
@@ -62,42 +69,58 @@ class IndustryController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Industry  $industry
-     * @return \Illuminate\Http\Response
+     * @param Industry $industry
+     *
+     * @return JsonResponse
      */
     public function show(Industry $industry)
     {
-        //
+        return StandardResponse::getStandardResponse(
+            404,
+            "Route Not Available"
+        );
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Industry  $industry
-     * @return \Illuminate\Http\Response
+     * @param Industry  $industry
+     *
+     * @return JsonResponse
      */
     public function edit(Industry $industry)
     {
-        //
+        return StandardResponse::getStandardResponse(
+            404,
+            "Route Not Available"
+        );
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Industry  $industry
+     * @param UpdateIndustryRequest $request
+     * @param Industry $industry
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
-    public function update(UpdateIndustryRequest $request, Industry $industry): \Illuminate\Http\JsonResponse
+    public function update(UpdateIndustryRequest $request, Industry $industry): JsonResponse
     {
         try {
-            $industry->name = $request->get('name');
-            $industry->save();
-            return StandardResponse::getStandardResponse(
-                201,
-                "Industry Successfully Updated"
-            );
+            if (Auth::user()->can('update', $industry)) {
+                $industry->name = $request->get('name');
+                $industry->save();
+
+                return StandardResponse::getStandardResponse(
+                    201,
+                    "Industry Successfully Updated"
+                );
+            }else{
+                return StandardResponse::getStandardResponse(
+                    Response::HTTP_FORBIDDEN,
+                    "Not Allowed To Update Industry"
+                );
+            }
         }catch (\Exception $exception){
             Log::error("Failed to update industry", ['reason' => $exception->getMessage()]);
             return StandardResponse::getStandardResponse(
@@ -110,11 +133,22 @@ class IndustryController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Industry  $industry
-     * @return \Illuminate\Http\Response
+     * @param Industry $industry
+     *
+     * @return JsonResponse
      */
     public function destroy(Industry $industry)
     {
-
+        if (Auth::user()->can('delete', $industry)) {
+            $industry->delete();
+            return StandardResponse::getStandardResponse(
+                201,
+                "Industry Successfully Deleted"
+            );
+        }
+        return StandardResponse::getStandardResponse(
+            Response::HTTP_FORBIDDEN,
+            "Not Allowed To Delete Industry"
+        );
     }
 }
