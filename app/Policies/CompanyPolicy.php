@@ -23,7 +23,7 @@ class CompanyPolicy
 
     public function view(User $user, Company $company): bool
     {
-        return $this->isUserCreatorOfCompany($user, $company);
+        return true;
     }
 
     public function update(User $user, Company $company): bool{

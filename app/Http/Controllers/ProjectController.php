@@ -8,6 +8,7 @@ use App\Http\Responses\StandardResponse;
 use App\Models\Company;
 use App\Models\Project;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use PhpParser\PrettyPrinter\Standard;
 
 class ProjectController extends Controller
@@ -46,6 +47,7 @@ class ProjectController extends Controller
     {
         $project = new Project($request->all());
         $project->company()->associate(Company::find($request->get('company')));
+        $project->createdBy()->associate(Auth::user());
         $project->save();
         return StandardResponse::getStandardResponse(
             201,
@@ -93,11 +95,19 @@ class ProjectController extends Controller
      */
     public function update(UpdateProjectRequest $request, project $project)
     {
-        $project->fill($request->all())->save();
-        return StandardResponse::getStandardResponse(
-            201,
-            "Project Successfully Updated"
-        );
+        if (Auth::user()->can('update', $project)) {
+            $project->fill($request->all())->save();
+
+            return StandardResponse::getStandardResponse(
+                201,
+                "Project Successfully Updated"
+            );
+        }else{
+            return StandardResponse::getStandardResponse(
+                403,
+                "You Are Not Authorized To Edit This Project"
+            );
+        }
     }
 
     /**
@@ -109,10 +119,18 @@ class ProjectController extends Controller
      */
     public function destroy(project $project)
     {
-        $project->delete();
-        return StandardResponse::getStandardResponse(
-            201,
-            "Project Successfully Deleted"
-        );
+        if (Auth::user()->can('update', $project)) {
+            $project->delete();
+
+            return StandardResponse::getStandardResponse(
+                201,
+                "Project Successfully Deleted"
+            );
+        }else{
+            return StandardResponse::getStandardResponse(
+                403,
+                "You Are Not Authorized To Delete This Project"
+            );
+        }
     }
 }
