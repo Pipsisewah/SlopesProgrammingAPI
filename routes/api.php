@@ -6,6 +6,7 @@ use \App\Http\Controllers\AuthController;
 use \App\Http\Controllers\CompaniesController;
 use \App\Http\Controllers\IndustryController;
 use \App\Http\Controllers\ProjectController;
+use \App\Http\Controllers\FeatureController;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,3 +35,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::resource("/project", ProjectController::class);
 });
+Route::middleware(['auth:sanctum'])->group(function () {
+    Route::resource("/feature", FeatureController::class);
+    Route::put("/feature/{feature}/attachTag/{tag}", [FeatureController::class, "attachTag"]);
+});
+
