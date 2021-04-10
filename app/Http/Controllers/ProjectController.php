@@ -8,6 +8,7 @@ use App\Http\Responses\StandardResponse;
 use App\Models\Company;
 use App\Models\Project;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use PhpParser\PrettyPrinter\Standard;
 
@@ -20,7 +21,9 @@ class ProjectController extends Controller
      */
     public function index()
     {
-        return StandardResponse::getStandardResponse(200,Project::all());
+        return StandardResponse::getStandardResponse(
+            Response::HTTP_OK,
+            Project::all());
     }
 
     /**
@@ -31,7 +34,7 @@ class ProjectController extends Controller
     public function create()
     {
         return StandardResponse::getStandardResponse(
-            404,
+            Response::HTTP_NOT_FOUND,
             "Route Not Available"
         );
     }
@@ -39,20 +42,28 @@ class ProjectController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param CreateProjectRequest $request
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function store(CreateProjectRequest $request)
+    public function store(CreateProjectRequest $request): \Illuminate\Http\JsonResponse
     {
-        $project = new Project($request->all());
-        $project->company()->associate(Company::find($request->get('company')));
-        $project->createdBy()->associate(Auth::user());
-        $project->save();
-        return StandardResponse::getStandardResponse(
-            201,
-            "Project Successfully Created"
-        );
+        if(Auth::user()->can('create')) {
+            $project = new Project($request->all());
+            $project->company()->associate(Company::find($request->get('company')));
+            $project->createdBy()->associate(Auth::user());
+            $project->save();
+
+            return StandardResponse::getStandardResponse(
+                Response::HTTP_CREATED,
+                "Project Successfully Created"
+            );
+        }else{
+            return StandardResponse::getStandardResponse(
+                Response::HTTP_FORBIDDEN,
+                "You Are Not Authorized To Create A Project"
+            );
+        }
     }
 
     /**
@@ -65,7 +76,7 @@ class ProjectController extends Controller
     public function show(project $project)
     {
         return StandardResponse::getStandardResponse(
-            200,
+            Response::HTTP_OK,
             $project
         );
     }
@@ -80,7 +91,7 @@ class ProjectController extends Controller
     public function edit(project $project)
     {
         return StandardResponse::getStandardResponse(
-            404,
+            Response::HTTP_NOT_FOUND,
             "Route Not Available"
         );
     }
@@ -99,12 +110,12 @@ class ProjectController extends Controller
             $project->fill($request->all())->save();
 
             return StandardResponse::getStandardResponse(
-                201,
+                Response::HTTP_OK,
                 "Project Successfully Updated"
             );
         }else{
             return StandardResponse::getStandardResponse(
-                403,
+                Response::HTTP_FORBIDDEN,
                 "You Are Not Authorized To Edit This Project"
             );
         }
@@ -123,12 +134,12 @@ class ProjectController extends Controller
             $project->delete();
 
             return StandardResponse::getStandardResponse(
-                201,
+                Response::HTTP_NO_CONTENT,
                 "Project Successfully Deleted"
             );
         }else{
             return StandardResponse::getStandardResponse(
-                403,
+                Response::HTTP_FORBIDDEN,
                 "You Are Not Authorized To Delete This Project"
             );
         }

@@ -26,6 +26,16 @@ class ProjectPolicy
      *
      * @return bool
      */
+    public function create(User $user, Project $project): bool{
+        true;
+    }
+
+    /**
+     * @param User $user
+     * @param Project $project
+     *
+     * @return bool
+     */
     public function edit(User $user, Project $project): bool{
         return $this->isUserCreatorOfProject($user, $project);
     }

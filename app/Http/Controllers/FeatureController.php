@@ -3,14 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateFeatureRequest;
+use App\Http\Requests\UpdateFeatureRequest;
 use App\Http\Responses\StandardResponse;
 use App\Models\Feature;
 use App\Models\Project;
 use App\Models\Tag;
-use Illuminate\Auth\Access\Gate;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class FeatureController extends Controller
 {
@@ -23,7 +25,7 @@ class FeatureController extends Controller
     {
         $features = Feature::all()->where('user_id', '=', Auth::id());
         return StandardResponse::getStandardResponse(
-            200,
+            Response::HTTP_OK,
             "Features",
             $features->all()
         );
@@ -37,7 +39,7 @@ class FeatureController extends Controller
     public function create()
     {
         return StandardResponse::getStandardResponse(
-            404,
+            Response::HTTP_NOT_FOUND,
             "Route Not Available"
         );
     }
@@ -60,7 +62,7 @@ class FeatureController extends Controller
             $feature->tag()->attach($tag);
         }
         return StandardResponse::getStandardResponse(
-            201,
+            Response::HTTP_CREATED,
             "Feature Successfully Created"
         );
     }
@@ -69,11 +71,15 @@ class FeatureController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Models\Feature  $feature
-     * @return \Illuminate\Http\Response
+     *
+     * @return JsonResponse
      */
     public function show(Feature $feature)
     {
-        //
+        return StandardResponse::getStandardResponse(
+            Response::HTTP_NOT_FOUND,
+            "Route Not Available"
+        );
     }
 
     /**
@@ -86,7 +92,7 @@ class FeatureController extends Controller
     public function edit(Feature $feature)
     {
         return StandardResponse::getStandardResponse(
-            404,
+            Response::HTTP_NOT_FOUND,
             "Route Not Available"
         );
     }
@@ -99,11 +105,19 @@ class FeatureController extends Controller
      *
      * @return JsonResponse
      */
-    public function update(Request $request, Feature $feature)
+    public function update(UpdateFeatureRequest $request, Feature $feature)
     {
+        $feature->fill($request->all());
+        $project = Project::find($request->get('project'));
+        Log::notice("Project: " . $project);
+        $feature->project()->associate($project);
+        $feature->save();
+        foreach ($request->get('tags') as $tag) {
+            $feature->tag()->sync($tag);
+        }
         return StandardResponse::getStandardResponse(
-            404,
-            "Route Not Available"
+            Response::HTTP_OK,
+            "Successfully Updated Feature"
         );
     }
 
@@ -119,12 +133,12 @@ class FeatureController extends Controller
         if (Auth::user()->can('delete', $feature)) {
             $feature->delete();
             return StandardResponse::getStandardResponse(
-                201,
+                Response::HTTP_NO_CONTENT,
                 "Feature Successfully Deleted"
             );
         }else{
             return StandardResponse::getStandardResponse(
-                403,
+                Response::HTTP_FORBIDDEN,
                 "You Are Not Authorized To Delete This Feature"
             );
         }
@@ -141,7 +155,7 @@ class FeatureController extends Controller
         $feature->tag()->attach($tag);
         $feature->save();
         return StandardResponse::getStandardResponse(
-            200,
+            Response::HTTP_OK,
             "Would have attached",
             ['feature' => $feature,
                 'tag' => $tag]
