@@ -156,7 +156,7 @@ class FeatureController extends Controller
         $feature->save();
         return StandardResponse::getStandardResponse(
             Response::HTTP_OK,
-            "Would have attached",
+            "Successfully Attached A Tag To A Feature",
             ['feature' => $feature,
                 'tag' => $tag]
         );
