@@ -107,9 +107,11 @@ class UserDataController extends Controller
      */
     public function update(CreateUserDataRequest $request, int $id)
     {
-        $userData = UserData::findOrFail($id);
+        $userData = UserData::query()->findOrFail($id);
+        /** @var User $user */
+        $user = Auth::user();
         Log::notice("Provided ID: " . $id);
-        if(Auth::user()->can('edit', $userData)){
+        if($user->can('edit', $userData)){
             $userData->fill($request->all());
             $userData->user()->associate(Auth::user());
             $userData->save();

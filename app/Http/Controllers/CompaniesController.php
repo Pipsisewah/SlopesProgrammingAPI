@@ -25,7 +25,8 @@ class CompaniesController extends Controller
     {
         return StandardResponse::getStandardResponse(
             200,
-            Company::all()
+            "All Companies",['data' =>
+            Company::all()]
         );
     }
 

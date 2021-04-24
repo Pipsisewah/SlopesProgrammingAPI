@@ -23,7 +23,8 @@ class ProjectController extends Controller
     {
         return StandardResponse::getStandardResponse(
             Response::HTTP_OK,
-            Project::all());
+            "All Projects",
+            ['data' => Project::all()]);
     }
 
     /**

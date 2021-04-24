@@ -27,7 +27,7 @@ class FeatureController extends Controller
         return StandardResponse::getStandardResponse(
             Response::HTTP_OK,
             "Features",
-            $features->all()
+            ['data' => Feature::all()]
         );
     }
 

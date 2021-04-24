@@ -23,6 +23,10 @@ class Company extends Model
         'state',
     ];
 
+    protected $appends = [
+        'industry'
+    ];
+
     public $timestamps = true;
 
     public function createdBy():BelongsTo{
@@ -35,5 +39,9 @@ class Company extends Model
 
     public function project():HasMany{
         return $this->hasMany(Project::class);
+    }
+
+    public function getIndustryAttribute(){
+        return $this->industry()->first();
     }
 }
