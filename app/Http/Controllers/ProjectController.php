@@ -49,7 +49,6 @@ class ProjectController extends Controller
      */
     public function store(CreateProjectRequest $request): \Illuminate\Http\JsonResponse
     {
-        if(Auth::user()->can('create')) {
             $project = new Project($request->all());
             $project->company()->associate(Company::find($request->get('company')));
             $project->createdBy()->associate(Auth::user());
@@ -59,12 +58,6 @@ class ProjectController extends Controller
                 Response::HTTP_CREATED,
                 "Project Successfully Created"
             );
-        }else{
-            return StandardResponse::getStandardResponse(
-                Response::HTTP_FORBIDDEN,
-                "You Are Not Authorized To Create A Project"
-            );
-        }
     }
 
     /**

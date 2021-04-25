@@ -21,8 +21,8 @@ class Project extends Model
     protected $fillable = [
         'name',
         'description',
-        'startDate',
-        'endDate'
+        'start_date',
+        'end_date'
     ];
 
     public function company():BelongsTo{

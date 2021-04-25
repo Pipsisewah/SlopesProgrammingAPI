@@ -24,7 +24,8 @@ class IndustryController extends Controller
         $industries = Industry::all();
         return StandardResponse::getStandardResponse(
             200,
-            $industries
+            "All Industries",['data' =>
+                                 Industry::all()]
         );
     }
 
