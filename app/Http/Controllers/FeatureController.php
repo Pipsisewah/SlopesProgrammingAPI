@@ -58,8 +58,10 @@ class FeatureController extends Controller
         $feature->project()->associate($project);
         $feature->user()->associate(Auth::user());
         $feature->save();
-        foreach ($request->get('tags') as $tag) {
-            $feature->tag()->attach($tag);
+        if(!empty($request->get('tags'))) {
+            foreach ($request->get('tags') as $tag) {
+                $feature->tag()->attach($tag);
+            }
         }
         return StandardResponse::getStandardResponse(
             Response::HTTP_CREATED,
