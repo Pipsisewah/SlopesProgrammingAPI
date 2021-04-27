@@ -16,8 +16,7 @@ class AuthController extends Controller
 {
     public function register(RegisterRequest $request):JsonResponse{
         Log::notice("Received request to create user, " , ['info' => $request->toArray()]);
-        $user = User::create([
-            'name' => $request->name,
+        User::create([
             'email' => $request->email,
             'password' => Hash::make($request->password)
         ]);

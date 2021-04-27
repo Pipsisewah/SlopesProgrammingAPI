@@ -28,7 +28,8 @@ class CreateCompanyRequest extends FormRequest
             'description' => 'required|max:255',
             'industry' => 'required|exists:industries,id',
             'city' => 'required|max:100',
-            'state' => 'required|size:2'
+            'state' => 'required|size:2',
+
         ];
     }
 }

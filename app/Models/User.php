@@ -47,4 +47,8 @@ class User extends Authenticatable
     public function companiesCreated():HasMany{
         return $this->hasMany(Company::class, "created_by");
     }
+
+    public function userData():HasOne{
+        return $this->hasOne(UserData::class);
+    }
 }

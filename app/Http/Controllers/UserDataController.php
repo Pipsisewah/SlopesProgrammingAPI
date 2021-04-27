@@ -21,10 +21,17 @@ class UserDataController extends Controller
      */
     public function index()
     {
-        return StandardResponse::getStandardResponse(
-            Response::HTTP_NOT_FOUND,
-            "Route Not Available"
-        );
+        try {
+            return StandardResponse::getStandardResponse(
+                Response::HTTP_OK,
+                Auth::user()->userData()->firstOrFail()
+            );
+        }catch (\Exception $exception){
+            return StandardResponse::getStandardResponse(
+                Response::HTTP_NOT_FOUND,
+                "No user data found"
+            );
+        }
     }
 
     /**

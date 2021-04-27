@@ -22,7 +22,12 @@ class UserData extends Model
         'last_name',
         'city',
         'state',
-        'zip'
+        'zip',
+        'label',
+        'phone',
+        'website',
+        'description',
+
     ];
 
     public function user():BelongsTo{

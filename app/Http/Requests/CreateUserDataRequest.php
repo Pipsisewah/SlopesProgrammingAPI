@@ -19,6 +19,11 @@ class CreateUserDataRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
+     *             $table->string('label');
+    $table->string('phone');
+    $table->string('website');
+    $table->text('description');
+     *
      * @return array
      */
     public function rules()
@@ -28,7 +33,11 @@ class CreateUserDataRequest extends FormRequest
             'last_name' => 'required|string',
             'city' => 'required|string',
             'state' => 'required|size:2',
-            'zip' => 'required|size:5'
+            'zip' => 'required|size:5',
+            'label' => 'required|string',
+            'phone' => 'sometimes|regex:/^([0-9\s\-\+\(\)]*)$/|min:10',
+            'website' => 'sometimes|regex:/^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/',
+            'description' => 'sometimes|string'
         ];
     }
 }
