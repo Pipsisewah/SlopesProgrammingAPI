@@ -29,7 +29,10 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::middleware('auth:sanctum')->get('/test', [AuthController::class, 'test']);
 
 Route::middleware(['auth:sanctum'])->group(function () {
+    Route::get("/company/attached", [CompaniesController::class, "showAttachedToUser"]);
     Route::resource("/company", CompaniesController::class);
+    Route::put("/company/{company}/attach", [CompaniesController::class, "attachUserToCompany"]);
+    Route::put("/company/{company}/detach", [CompaniesController::class, "detachUserFromCompany"]);
 });
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::resource("/industry", IndustryController::class);

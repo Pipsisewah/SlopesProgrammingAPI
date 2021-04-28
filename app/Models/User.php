@@ -56,6 +56,11 @@ class User extends Authenticatable
 
     public function education(): BelongsToMany
     {
-        return $this->BelongsToMany(Education::class, 'education_user');
+        return $this->BelongsToMany(Education::class);
+    }
+
+    public function company(): BelongsToMany
+    {
+        return $this->BelongsToMany(Company::class);
     }
 }

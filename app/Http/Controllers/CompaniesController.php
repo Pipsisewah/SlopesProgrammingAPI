@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\AttachDetachUserToCompanyRequest;
 use App\Http\Requests\CreateCompanyRequest;
 use App\Http\Requests\UpdateCompanyRequest;
 use App\Http\Responses\StandardResponse;
 use App\Models\Company;
 use App\Models\Industry;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -153,6 +155,52 @@ class CompaniesController extends Controller
         return StandardResponse::getStandardResponse(
             Response::HTTP_FORBIDDEN,
             "Failed To Delete Company"
+        );
+    }
+
+    public function attachUserToCompany(Company $company): JsonResponse{
+        try {
+            if($company->user != null && $company->user->contains(Auth::user())){
+                return StandardResponse::getStandardResponse(
+                    Response::HTTP_NO_CONTENT,
+                    "User Already Associated With Company"
+                );
+            }
+            $company->user()->attach(Auth::user());
+            return StandardResponse::getStandardResponse(
+                Response::HTTP_NO_CONTENT,
+                "Successfully Associated With Company"
+            );
+        }catch (\Exception $exception){
+            Log::error("Failed to associate user with company", ['error' => $exception->getMessage()]);
+            return StandardResponse::getStandardResponse(
+                Response::HTTP_INTERNAL_SERVER_ERROR,
+                "Failed To Associate User With Company"
+            );
+        }
+    }
+
+    public function detachUserFromCompany(Company $company): JsonResponse{
+        try{
+            $company->user()->detach(Auth::user());
+            return StandardResponse::getStandardResponse(
+                Response::HTTP_NO_CONTENT,
+                "Successfully Detached User From Company"
+            );
+        }catch (\Exception $exception){
+            Log::error("Failed to detach user with education", ['error' => $exception->getMessage()]);
+            return StandardResponse::getStandardResponse(
+                Response::HTTP_INTERNAL_SERVER_ERROR,
+                "Failed To Detach User With Education"
+            );
+        }
+    }
+
+    public function showAttachedToUser(Request $request): JsonResponse{
+        return StandardResponse::getStandardResponse(
+            200,
+            "All Companies",['data' =>
+                                 Auth::user()->company->all()]
         );
     }
 }

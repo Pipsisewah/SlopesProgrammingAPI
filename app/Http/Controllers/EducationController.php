@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\AttachUserWithEducationRequest;
+use App\Http\Requests\AttachDetachUserWithEducationRequest;
 use App\Http\Requests\CreateEducationRequest;
 use App\Http\Requests\DetachUserWithEducationRequest;
 use App\Http\Requests\UpdateEducationRequest;
@@ -145,15 +145,15 @@ class EducationController extends Controller
         }
     }
 
-    public function attachUserWithEducation(Request $request, Education $education): JsonResponse{
+    public function attachUserWithEducation(Education $education): JsonResponse{
         try {
-            if($education->user->contains(Auth::user())){
+            if($education->user != null && $education->users->contains(Auth::user())){
                 return StandardResponse::getStandardResponse(
                     Response::HTTP_NO_CONTENT,
                     "User Already Associated With Education"
                 );
             }
-            $education->user()->attach(Auth::user());
+            $education->users()->attach(Auth::user());
             return StandardResponse::getStandardResponse(
                 Response::HTTP_NO_CONTENT,
                 "Successfully Associated With Education"
@@ -167,10 +167,9 @@ class EducationController extends Controller
         }
     }
 
-    public function detachUserWithEducation(Request $request, Education $education): JsonResponse{
+    public function detachUserWithEducation(Education $education): JsonResponse{
         try{
-            //$education = Education::findOrFail($request->get('id'));
-            $education->user()->detach(Auth::user());
+            $education->users()->detach(Auth::user());
             return StandardResponse::getStandardResponse(
                 Response::HTTP_NO_CONTENT,
                 "Successfully Detached User From Education"

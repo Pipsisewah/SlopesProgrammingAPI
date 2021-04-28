@@ -20,7 +20,7 @@ class Education extends Model
         ];
 
 
-    public function user():BelongsToMany{
-        return $this->belongsToMany(User::class, 'education_user');
+    public function users():BelongsToMany{
+        return $this->belongsToMany(User::class);
     }
 }

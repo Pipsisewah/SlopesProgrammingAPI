@@ -14,7 +14,7 @@ class CreateEducationTable extends Migration
     {
         Schema::create('education', function (Blueprint $table) {
             $table->id();
-            $table->string('institution');
+            $table->string('institution')->unique();
             $table->string('area');
             $table->string('study_type');
             $table->date('start_date')->nullable();
