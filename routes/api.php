@@ -8,6 +8,7 @@ use \App\Http\Controllers\IndustryController;
 use \App\Http\Controllers\ProjectController;
 use \App\Http\Controllers\FeatureController;
 use \App\Http\Controllers\UserDataController;
+use \App\Http\Controllers\EducationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,7 +27,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::middleware('auth:sanctum')->get('/test', [AuthController::class, 'test']);
-Route::get('/test2', [AuthController::class, 'test']);
+
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::resource("/company", CompaniesController::class);
 });
@@ -42,4 +43,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
 });
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::resource("/userData", UserDataController::class);
+});
+Route::middleware(['auth:sanctum'])->group(function () {
+    Route::resource("/education", EducationController::class);
+    Route::put("/education/{education}/attach", [EducationController::class, "attachUserWithEducation"]);
+    Route::put("/education/{education}/detach", [EducationController::class, "detachUserWithEducation"]);
 });
