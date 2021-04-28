@@ -102,6 +102,12 @@ class EducationController extends Controller
      */
     public function update(UpdateEducationRequest $request, Education $education)
     {
+        if(!Auth::user()->can('update', $education)){
+            return StandardResponse::getStandardResponse(
+                Response::HTTP_FORBIDDEN,
+                "You Are Not Authorized To Update This Education"
+            );
+        }
         $education->fill($request->all());
         $education->save();
         return StandardResponse::getStandardResponse(
@@ -119,6 +125,12 @@ class EducationController extends Controller
      */
     public function destroy(Education $education)
     {
+        if(!Auth::user()->can('delete', $education)){
+            return StandardResponse::getStandardResponse(
+                Response::HTTP_FORBIDDEN,
+                "You Are Not Authorized To Delete This Education"
+            );
+        }
         try {
             $education->delete();
             return StandardResponse::getStandardResponse(
