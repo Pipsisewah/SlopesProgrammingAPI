@@ -23,11 +23,10 @@ class FeatureController extends Controller
      */
     public function index()
     {
-        $features = Feature::all()->where('user_id', '=', Auth::id());
         return StandardResponse::getStandardResponse(
             Response::HTTP_OK,
             "Features",
-            ['data' => $features->all()]
+            ['data' => Feature::where('user_id', '=', Auth::id())->get()]
         );
     }
 
